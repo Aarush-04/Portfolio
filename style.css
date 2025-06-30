@@ -1,0 +1,367 @@
+:root {
+  --bg: #0e0f11;
+  --bg-alt: #111417;
+  --accent: #1abc9c;
+  --text-light: #cde7de;
+  --text-dark: #1a1a1a;
+  --card-bg: #1a1a1a;
+  --card-hover: #1abc9caa;
+  --wip-bg: #133d33;
+  --font-mono: 'Source Code Pro', monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg);
+  color: var(--text-light);
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+.section {
+  width: 100%;
+  background-color: var(--bg);
+}
+
+.alt-bg {
+  background-color: var(--bg-alt);
+}
+
+.section .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 40px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Leave rest of CSS unchanged from your latest version */
+
+
+h1, h2, h3, h4 {
+  margin: 0 0 20px;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.scroll-hint {
+  font-size: 0.9rem;
+  opacity: 0.6;
+}
+
+/* Loader */
+#loader {
+  position: fixed;
+  z-index: 9999;
+  background: var(--bg);
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.7s ease;
+}
+
+.loader-spinner {
+  width: 50px;
+  height: 50px;
+  border: 6px solid var(--accent);
+  border-top: 6px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+.loader-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  letter-spacing: 0.1em;
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 12ch;
+  animation: typing 2s steps(12), blink 1s step-end infinite alternate;
+}
+
+/* Typing effect */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 12ch }
+}
+
+@keyframes blink {
+  50% { border-color: transparent }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Hero */
+#hero {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+
+#hero-bg {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Title and subtitle */
+.title {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 10px;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--text-light);
+}
+
+/* Scroll hint styling */
+.scroll-hint {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-light);
+  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+
+/* Timeline */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.timeline-item {
+  background-color: #1a1a1a;
+  padding: 20px;
+  border-left: 5px solid var(--accent);
+  box-shadow: 0 0 12px #1abc9c44;
+  border-radius: 6px;
+}
+
+.timeline-item h3 {
+  margin: 0;
+}
+
+.timeline-item h4 {
+  margin: 5px 0;
+  color: #8fe7cf;
+}
+
+.timeline-item .date {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.timeline-item ul {
+  padding-left: 20px;
+}
+
+/* Projects Grid */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
+  gap: 25px;
+}
+
+.project-card {
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  padding: 20px;
+  color: var(--text-light);
+  text-decoration: none;
+  position: relative;
+  box-shadow: 0 4px 15px #0a0a0aaa;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.project-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 35px var(--card-hover);
+}
+
+/* Hover overlay with more details */
+.project-card::after {
+  content: attr(data-details);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(26, 188, 156, 0.95);
+  color: var(--bg);
+  font-weight: 600;
+  padding: 12px 20px;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  font-size: 0.95rem;
+  line-height: 1.3;
+  white-space: normal;
+  border-radius: 0 0 10px 10px;
+}
+
+.project-card:hover::after {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Trackory WIP card */
+.project-card.wip {
+  background-color: var(--wip-bg);
+  box-shadow: 0 0 20px #0f6a55cc;
+  cursor: default;
+  pointer-events: none;
+  color: #8fffcf;
+}
+
+.project-card.wip:hover {
+  transform: none;
+  box-shadow: 0 0 20px #0f6a55cc;
+}
+
+/* Skills Grid */
+.stack-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.stack-grid span {
+  background-color: #142523;
+  color: var(--accent);
+  padding: 8px 15px;
+  border-radius: 18px;
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: default;
+  user-select: none;
+  box-shadow: 0 0 10px #1abc9c44;
+  transition: background-color 0.3s ease;
+}
+
+.stack-grid span:hover {
+  background-color: #1abc9c;
+  color: var(--bg);
+}
+
+/* Contact Section */
+.contact {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 40px;
+  width: 100%;
+  color: var(--text-light);
+}
+
+.contact-info {
+  list-style: none;
+  padding: 0;
+  margin-top: 20px;
+  line-height: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+}
+
+.contact-info li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  font-size: 1.1rem;
+  color: var(--text-light);
+}
+
+.contact-info a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.contact-info a:hover {
+  color: #15b38a;
+}
+
+.final-words {
+  margin-top: 30px;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--accent);
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+/* Icon styling in headings */
+h2 i {
+  font-size: 1.3rem;
+  color: var(--accent);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .section {
+    padding: 60px 20px;
+  }
+  .stack-grid {
+    justify-content: center;
+  }
+  .contact-info {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+/* Prevent horizontal overflow */
+html, body {
+  overflow-x: hidden;
+}
