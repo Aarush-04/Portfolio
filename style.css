@@ -28,6 +28,9 @@ body::-webkit-scrollbar-thumb {
   }
 }
 
+* {
+  transition: background-color 0.4s ease, color 0.4s ease, box-shadow 0.4s ease;
+}
 
 
 :root {
@@ -40,6 +43,21 @@ body::-webkit-scrollbar-thumb {
   --card-hover: #1abc9caa;
   --wip-bg: #133d33;
   --font-mono: 'Source Code Pro', monospace;
+  --skills-cardbg: #142523;
+  --skills-cardhover: #1abc9c;
+  --skills-accent: #1abc9c;
+}
+.light-mode {
+  --bg: #91b3a7;
+  --bg-alt: #a8c3b5;
+  --accent: #121237;
+  --text: #121237;
+  --card-bg: #d4e2db;
+  --card-hover: #12123744;
+  --wip-bg: #6f9584;
+  --skills-cardbg: #121237;
+  --skills-cardhover: #1abc9c;
+  --skills-accent: #1abc9c;
 }
 
 * {
@@ -74,10 +92,25 @@ html, body {
   box-sizing: border-box;
 }
 
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: var(--accent);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  color: #fff;
+  cursor: pointer;
+  z-index: 10000;
+}
+
 /* Leave rest of CSS unchanged from your latest version */
 
 
-h1, h2, h3, h4 {
+h1, h2, h3, h4, p {
   margin: 0 0 20px;
   color: var(--accent);
   display: flex;
@@ -345,7 +378,7 @@ h1, h2, h3, h4 {
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(26, 188, 156, 0.95);
+  background: var(--accent);
   color: var(--bg);
   font-weight: 600;
   padding: 12px 20px;
@@ -434,8 +467,8 @@ h1, h2, h3, h4 {
 .skill-card {
   flex: 0 0 auto;
   padding: 1rem 2rem;
-  background-color: #142523;
-  color: var(--accent);
+  background-color: var(--skills-cardbg);
+  color: var(--skills-accent);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   font-weight: 500;
@@ -449,7 +482,7 @@ h1, h2, h3, h4 {
 
 .skill-card:hover {
   transform: scale(1.05);
-  background-color: #1abc9c;
+  background-color: var(--skills-cardhover);
   color: var(--bg);
 }
 

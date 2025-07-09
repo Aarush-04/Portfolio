@@ -108,19 +108,22 @@ window.addEventListener("load", () => {
     });
 
     // VANTA.NET background on hero
+
+    
+  const isLight = document.documentElement.classList.contains('light-mode');
     if (window.VANTA) {
       // Delay init slightly to avoid race conditions
       setTimeout(() => {
         VANTA.NET({
           el: "#hero-bg",
           mouseControls: true,
-          touchControls: false,
+          touchControls: true,
           minHeight: 200.0,
           minWidth: 200.0,
           scale: 1.0,
           scaleMobile: 1.0,
-          backgroundColor: 0x0e0f11,
-          color: 0x1abc9c,
+          backgroundColor: isLight ? 0x91b3a7 : 0x0e0f11,
+          color: isLight ? 0x121237 : 0x1abc9c,
           spacing: 30,
           maxDistance: 20,
         });

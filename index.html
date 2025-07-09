@@ -20,8 +20,7 @@
   <link rel="stylesheet" href="style.css" />
 
 
-  <!-- script for image animation -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
 
   <!-- new script for image animation -->
 
@@ -20866,6 +20865,33 @@
     }
     animate();
 
+
+    const themeToggle = document.getElementById('theme-toggle');
+const currentPref = localStorage.getItem('theme');
+if (currentPref === 'light') document.documentElement.classList.add('light-mode');
+
+themeToggle.addEventListener('click', () => {
+  document.documentElement.classList.toggle('light-mode');
+  const isLight = document.documentElement.classList.contains('light-mode');
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  themeToggle.textContent = isLight ? '🌞' : '🌙';
+
+  if(window.VANTA && VANTA.current){
+     VANTA.current.setOptions({
+      backgroundColor: Number(isLight ? '0x91b3a7' : '0x0e0f11'),
+      color: Number(isLight ? '0x121237' : '0x1abc9c')
+    });
+  }
+
+  // Update Three.js dot color
+  if (points) {
+    const newColor = isLight ? 0x91b3a7 : 0x1abc9c;
+    points.material.uniforms.color.value.set(newColor);
+  }
+});
+
+
+
   </script>
 
 </head>
@@ -20876,6 +20902,10 @@
     <div class="loader-spinner"></div>
     <div class="loader-text">Loading...</div>
   </div>
+
+  <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+  🌙
+  </button>
 
   <div id="content" style="visibility: hidden;">
     <!-- Hero Section -->
@@ -20971,7 +21001,7 @@
         <h2><i class="fa-solid fa-briefcase"></i> Experience</h2>
         <div class="timeline">
           <div class="timeline-item">
-            <h3>DHL Express Canada</h3>
+            <h3 class="project-headline" style="color: #1abc9c;">DHL Express Canada</h3>
             <span class="date">Aug 2023 – Sep 2024</span>
             <ul>
               <li>Prepared and configured laptops for new employees, ensuring optimal performance</li>
@@ -20982,7 +21012,7 @@
             </ul>
           </div>
           <div class="timeline-item">
-            <h3>Bath & Body Works</h3>
+            <h3 class="project-headline" style="color: #1abc9c;">Bath & Body Works</h3>
             <span class="date">Sep 2024 – Jan 2025</span>
             <ul>
               <li>Assisted customers in product selection and handled transactions efficiently</li>
@@ -20991,7 +21021,7 @@
             </ul>
           </div>
           <div class="timeline-item">
-            <h3>Red Trait Ventures</h3>
+            <h3 class="project-headline" style="color: #1abc9c;">Red Trait Ventures</h3>
             <span class="date">Feb 2023 – May 2023</span>
             <ul>
               <li>Maintained Azure-hosted apps and managed domain infrastructure</li>
@@ -21000,7 +21030,7 @@
             </ul>
           </div>
           <div class="timeline-item">
-            <h3>Inkeros (Telus Canada)</h3>
+            <h3 class="project-headline" style="color: #1abc9c;">Inkeros (Telus Canada)</h3>
             <span class="date">Aug 2022 – Sep 2022</span>
             <ul>
               <li>Generated leads via outbound calls, ensuring customer satisfaction</li>
@@ -21009,7 +21039,7 @@
             </ul>
           </div>
           <div class="timeline-item">
-            <h3>Freelance Developer</h3>
+            <h3 class="project-headline" style="color: #1abc9c;">Freelance Developer</h3>
             <span class="date">Apr 2021 – Feb 2022</span>
             <ul>
               <li>Developed e-commerce websites: robinrawandsupplies.ca, restlessera.com, nucleussportsgroup.com</li>
