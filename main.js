@@ -1,3 +1,4 @@
+
 window.addEventListener("load", () => {
   const loader = document.getElementById("loader");
   const content = document.getElementById("content");
@@ -108,23 +109,93 @@ window.addEventListener("load", () => {
 
     // VANTA.NET background on hero
     if (window.VANTA) {
-  // Delay init slightly to avoid race conditions
-        setTimeout(() => {
-            VANTA.NET({
-            el: "#hero-bg",
-            mouseControls: true,
-            touchControls: false,
-            minHeight: 200.0,
-            minWidth: 200.0,
-            scale: 1.0,
-            scaleMobile: 1.0,
-            backgroundColor: 0x0e0f11,
-            color: 0x1abc9c,
-            spacing: 30,
-            maxDistance: 20,
-            });
-        }, 100);
+      // Delay init slightly to avoid race conditions
+      setTimeout(() => {
+        VANTA.NET({
+          el: "#hero-bg",
+          mouseControls: true,
+          touchControls: false,
+          minHeight: 200.0,
+          minWidth: 200.0,
+          scale: 1.0,
+          scaleMobile: 1.0,
+          backgroundColor: 0x0e0f11,
+          color: 0x1abc9c,
+          spacing: 30,
+          maxDistance: 20,
+        });
+      }, 100);
     }
+
+    //svg animation
+
+    //old script for svg animation, not using (it was too slow and laggy) - new one is ani.js
+    /*
+    const svg = document.querySelector('.about-graphic');
+    const circles = svg.querySelectorAll('circle');
+    const circleArray = Array.from(circles);
+
+    // Store original radius for each circle
+    circleArray.forEach(circle => {
+      circle.dataset.originalR = circle.getAttribute('r');
+    });
+
+    let lastTime = 0;
+    svg.addEventListener('mousemove', (e) => {
+      const now = Date.now();
+      if (now - lastTime < 16) return; // throttle ~60fps
+      lastTime = now;
+
+      const rect = svg.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
+
+      circleArray.forEach(circle => {
+        const cx = parseFloat(circle.getAttribute('cx'));
+        const cy = parseFloat(circle.getAttribute('cy'));
+        const dist = Math.hypot(cx - mouseX, cy - mouseY);
+        const origR = parseFloat(circle.dataset.originalR);
+
+        if (dist < 30) {
+          // Grow radius proportional to closeness (max grow by 0.7)
+          const grow = ((30 - dist) / 40) * 0.7;
+          anime({
+            targets: circle,
+            r: origR + grow,
+            fill: '#d6681c',
+            duration: 150,
+            easing: 'easeOutQuad'
+          });
+        } else {
+          // Reset to original radius
+          anime({
+            targets: circle,
+            r: origR,
+            fill: '#1abc9c',
+            duration: 300,
+            easing: 'easeOutQuad'
+          });
+        }
+      });
+    });
+
+    // Reset all circles when mouse leaves SVG
+    svg.addEventListener('mouseleave', () => {
+      circleArray.forEach(circle => {
+        anime({
+          targets: circle,
+          r: circle.dataset.originalR,
+          fill: '#1abc9c',
+          duration: 400,
+          easing: 'easeOutQuad'
+        });
+      });
+    });
+    */
+
+
+
+    
 
   }
 });
