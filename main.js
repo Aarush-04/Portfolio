@@ -131,7 +131,132 @@ window.addEventListener("load", () => {
     }
 
     new ExperienceSlider();
+    
+// Contact Section Reveal Animation
+const contactSection = document.querySelector('.contact');
+const backToTopBtn = document.getElementById('backToTop');
 
+// Create intersection observer for scroll-triggered animations
+const observerOptions = {
+  root: null,
+  rootMargin: '0px',
+  threshold: 0.2 // Trigger when 20% of the element is visible
+};
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      // Add reveal class to trigger animations
+      entry.target.classList.add('reveal');
+      
+      // Optional: Stop observing once revealed (animation only plays once)
+      observer.unobserve(entry.target);
+    }
+  });
+}, observerOptions);
+
+// Start observing the contact section
+if (contactSection) {
+  observer.observe(contactSection);
+}
+
+// Back to Top Button functionality
+function toggleBackToTop() {
+  if (window.pageYOffset > 300) {
+    backToTopBtn.classList.add('show');
+  } else {
+    backToTopBtn.classList.remove('show');
+  }
+}
+
+// Smooth scroll to top
+function scrollToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+}
+
+// Event listeners for back to top
+window.addEventListener('scroll', toggleBackToTop);
+backToTopBtn.addEventListener('click', scrollToTop);
+
+// Enhanced contact icon interactions
+const contactIcons = document.querySelectorAll('.contact-icon');
+
+contactIcons.forEach(icon => {
+  // Add click ripple effect
+  icon.addEventListener('click', function(e) {
+    // Create ripple element
+    const ripple = document.createElement('span');
+    ripple.classList.add('ripple');
+    
+    // Position ripple at click location
+    const rect = this.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = e.clientX - rect.left - size / 2;
+    const y = e.clientY - rect.top - size / 2;
+    
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = x + 'px';
+    ripple.style.top = y + 'px';
+    
+    this.appendChild(ripple);
+    
+    // Remove ripple after animation
+    setTimeout(() => {
+      ripple.remove();
+    }, 600);
+  });
+  
+  // Add hover sound effect (optional - can be commented out)
+  icon.addEventListener('mouseenter', function() {
+    // You can add a subtle hover sound here if desired
+    // For now, we'll just add a subtle vibration effect on supported devices
+    if (navigator.vibrate) {
+      navigator.vibrate(50);
+    }
+  });
+  
+  // Add focus handling for keyboard accessibility
+  icon.addEventListener('focus', function() {
+    this.style.transform = 'scale(1.05)';
+  });
+  
+  icon.addEventListener('blur', function() {
+    this.style.transform = 'scale(1)';
+  });
+});
+
+// Smooth scroll enhancement for contact links
+const contactLinks = document.querySelectorAll('.contact-info a[href^="mailto"]');
+contactLinks.forEach(link => {
+  link.addEventListener('click', function(e) {
+    // Add a subtle animation feedback
+    this.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+      this.style.transform = 'scale(1)';
+    }, 100);
+  });
+});
+
+// Fallback for older browsers that don't support IntersectionObserver
+if (!window.IntersectionObserver) {
+  console.log('IntersectionObserver not supported, using scroll fallback');
+  
+  window.addEventListener('scroll', () => {
+    if (contactSection && !contactSection.classList.contains('reveal')) {
+      const sectionTop = contactSection.offsetTop;
+      const sectionHeight = contactSection.offsetHeight;
+      const scrollPosition = window.pageYOffset + window.innerHeight;
+      
+      // Trigger when section is 20% visible
+      if (scrollPosition > sectionTop + (sectionHeight * 0.2)) {
+        contactSection.classList.add('reveal');
+      }
+    }
+  });
+}
 
 
   }
