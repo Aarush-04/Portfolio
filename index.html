@@ -20,6 +20,8 @@
   <link rel="stylesheet" href="style.css" />
 
 
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
 
 
   <!-- new script for image animation -->
@@ -20867,28 +20869,28 @@
 
 
     const themeToggle = document.getElementById('theme-toggle');
-const currentPref = localStorage.getItem('theme');
-if (currentPref === 'light') document.documentElement.classList.add('light-mode');
+    const currentPref = localStorage.getItem('theme');
+    if (currentPref === 'light') document.documentElement.classList.add('light-mode');
 
-themeToggle.addEventListener('click', () => {
-  document.documentElement.classList.toggle('light-mode');
-  const isLight = document.documentElement.classList.contains('light-mode');
-  localStorage.setItem('theme', isLight ? 'light' : 'dark');
-  themeToggle.textContent = isLight ? '🌞' : '🌙';
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('light-mode');
+      const isLight = document.documentElement.classList.contains('light-mode');
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
+      themeToggle.textContent = isLight ? '🌞' : '🌙';
 
-  if(window.VANTA && VANTA.current){
-     VANTA.current.setOptions({
-      backgroundColor: Number(isLight ? '0x91b3a7' : '0x0e0f11'),
-      color: Number(isLight ? '0x121237' : '0x1abc9c')
+      if (window.VANTA && VANTA.current) {
+        VANTA.current.setOptions({
+          backgroundColor: Number(isLight ? '0x91b3a7' : '0x0e0f11'),
+          color: Number(isLight ? '0x121237' : '0x1abc9c')
+        });
+      }
+
+      // Update Three.js dot color
+      if (points) {
+        const newColor = isLight ? 0x91b3a7 : 0x1abc9c;
+        points.material.uniforms.color.value.set(newColor);
+      }
     });
-  }
-
-  // Update Three.js dot color
-  if (points) {
-    const newColor = isLight ? 0x91b3a7 : 0x1abc9c;
-    points.material.uniforms.color.value.set(newColor);
-  }
-});
 
 
 
@@ -20904,7 +20906,7 @@ themeToggle.addEventListener('click', () => {
   </div>
 
   <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-  🌙
+    🌙
   </button>
 
   <div id="content" style="visibility: hidden;">
@@ -21049,61 +21051,188 @@ themeToggle.addEventListener('click', () => {
       </div>
     </section>
 
-    <!-- Experience Section -->
+
+
+<!-- Experience Section -->
+<section class="section experience-section" id="experience">
+  <div class="experience-container">
+    <h2 class="section-heading">
+      <i class="fa-solid fa-briefcase"></i> Relevant Professional Experience
+    </h2>
+    
+    <div class="experience-slider">
+      <!-- Slide 1 - Red Trait Ventures -->
+      <div class="experience-slide active" data-index="0">
+        <div class="timeline-content">
+          <div class="timeline-header">
+            <img src="images/redtrait-logo.png" alt="Red Trait Ventures Logo" class="company-logo" />
+            <div>
+              <h3>Full Stack Developer</h3>
+              <p class="company">Red Trait Ventures & Associated Companies • Oakville, ON</p>
+              <span class="date">Feb 2023 – May 2023</span>
+            </div>
+          </div>
+          <ul class="summary">
+            <li style="color: var(--text-list);">Worked on Resolution1 directly with the CEO</li>
+            <li style="color: var(--text-list);">Managed Azure app services and contributed to .NET development</li>
+            <li style="color: var(--text-list);">Updated websites like Nucleus Sports Group using WordPress</li>
+          </ul>
+          <div class="expanded-info">
+            <p style="color: var(--text-list);"><strong>Tools:</strong> Azure, WordPress, .NET</p>
+            <p style="color: var(--text-list);"><strong>Focus:</strong> Full-stack Dev, Site Optimization, Maintenance</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Slide 2 - DHL -->
+      <div class="experience-slide" data-index="1">
+        <div class="timeline-content">
+          <div class="timeline-header">
+            <img src="images/dhl-logo.png" alt="DHL Logo" class="company-logo" />
+            <div>
+              <h3>IT Infrastructure Specialist & Bilingual Omni-Channel Support</h3>
+              <p class="company">DHL Express Canada • Brampton, ON</p>
+              <span class="date">Aug 2023 – Sep 2024</span>
+            </div>
+          </div>
+          <ul class="summary">
+            <li style="color: var(--text-list);">Provided technical support and configured laptops for new hires</li>
+            <li style="color: var(--text-list);">Managed nationwide IT assets and infrastructure</li>
+            <li style="color: var(--text-list);">Supported clients in English and French across multiple platforms</li>
+          </ul>
+          <div class="expanded-info">
+            <p style="color: var(--text-list);"><strong>Specialties:</strong> Bilingual support, Asset Management, Networking</li>
+            <p style="color: var(--text-list);"><strong>Tools:</strong> Microsoft 365, Intune, ServiceNow</li>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Slide 3 - Freelance -->
+      <div class="experience-slide" data-index="2">
+        <div class="timeline-content">
+          <div class="timeline-header">
+            <img src="images/freelance-icon.png" alt="Freelance Logo" class="company-logo" />
+            <div>
+              <h3>Freelance Web Developer</h3>
+              <p class="company">Multiple Clients • Remote</p>
+              <span class="date">Apr 2021 – Feb 2022</span>
+            </div>
+          </div>
+          <ul class="summary">
+            <li style="color: var(--text-list);">Built modern e-commerce sites with WordPress & custom code</li>
+            <li style="color: var(--text-list);">Improved performance and UX with optimization strategies</li>
+            <li style="color: var(--text-list);">Collaborated with designers to deliver intuitive interfaces</li>
+          </ul>
+          <div class="expanded-info">
+            <p style="color: var(--text-list);"><strong>Sites:</strong> robinrawandsupplies.ca, restlessera.com</li>
+            <p style="color: var(--text-list);"><strong>Tools:</strong> WordPress, GoDaddy, Google Domains</li>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Slide 4 - Arborists -->
+      <div class="experience-slide" data-index="3">
+        <div class="timeline-content">
+          <div class="timeline-header">
+            <img src="images/arborists-logo.png" alt="Arborists Logo" class="company-logo" />
+            <div>
+              <h3>Warehouse Optimization Specialist</h3>
+              <p class="company">The Arborists Canada • Brampton, ON</p>
+              <span class="date">Apr 2021</span>
+            </div>
+          </div>
+          <ul class="summary">
+            <li style="color: var(--text-list);">Implemented barcode scanning to improve order fulfillment speed</li>
+            <li style="color: var(--text-list);">Integrated custom sorting system with Salesforce</li>
+            <li style="color: var(--text-list);">Trained staff on inventory tech, improving overall efficiency</li>
+          </ul>
+          <div class="expanded-info">
+            <p style="color: var(--text-list);"><strong>Tools:</strong> Salesforce, Custom Scripts, Excel</li>
+            <p style="color: var(--text-list);"><strong>Impact:</strong> Reduced discrepancies & boosted productivity</li>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Navigation -->
+      <div class="slider-nav">
+        <button class="nav-btn prev-btn"><i class="fas fa-chevron-left"></i></button>
+        <div class="slider-dots"></div>
+        <button class="nav-btn next-btn"><i class="fas fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+    <!-- old experience section
     <section class="section experience" id="experience">
       <div class="container">
         <h2><i class="fa-solid fa-briefcase"></i> Experience</h2>
         <div class="timeline">
-          <div class="timeline-item">
-            <h3 class="project-headline" style="color: #1abc9c;">DHL Express Canada</h3>
-            <span class="date">Aug 2023 – Sep 2024</span>
-            <ul>
-              <li>Prepared and configured laptops for new employees, ensuring optimal performance</li>
-              <li>Provided advanced technical support for complex hardware/software issues</li>
-              <li>Managed IT assets across Canada and oversaw infrastructure network management</li>
-              <li>Supported users in English and French via phone, chat, and email</li>
-              <li>Assisted in sales efforts by addressing inquiries and telecom customer issues</li>
-            </ul>
+          <div class="timeline-line"></div>
+          <div class="timeline-block">
+            <div class="timeline-item">
+              <h3 class="project-headline" style="color: #1abc9c;">DHL Express Canada</h3>
+              <span class="date">Aug 2023 – Sep 2024</span>
+              <ul>
+                <li>Prepared and configured laptops for new employees, ensuring optimal performance</li>
+                <li>Provided advanced technical support for complex hardware/software issues</li>
+                <li>Managed IT assets across Canada and oversaw infrastructure network management</li>
+                <li>Supported users in English and French via phone, chat, and email</li>
+                <li>Assisted in sales efforts by addressing inquiries and telecom customer issues</li>
+              </ul>
+            </div>
           </div>
-          <div class="timeline-item">
-            <h3 class="project-headline" style="color: #1abc9c;">Bath & Body Works</h3>
-            <span class="date">Sep 2024 – Jan 2025</span>
-            <ul>
-              <li>Assisted customers in product selection and handled transactions efficiently</li>
-              <li>Managed inventory and restocked shelves to maintain product availability</li>
-              <li>Achieved daily sales goals through personalized recommendations</li>
-            </ul>
+          <div class="timeline-block">
+            <div class="timeline-item">
+              <h3 class="project-headline" style="color: #1abc9c;">Bath & Body Works</h3>
+              <span class="date">Sep 2024 – Jan 2025</span>
+              <ul>
+                <li>Assisted customers in product selection and handled transactions efficiently</li>
+                <li>Managed inventory and restocked shelves to maintain product availability</li>
+                <li>Achieved daily sales goals through personalized recommendations</li>
+              </ul>
+            </div>
           </div>
-          <div class="timeline-item">
-            <h3 class="project-headline" style="color: #1abc9c;">Red Trait Ventures</h3>
-            <span class="date">Feb 2023 – May 2023</span>
-            <ul>
-              <li>Maintained Azure-hosted apps and managed domain infrastructure</li>
-              <li>Updated and deployed websites using WordPress and custom scripts</li>
-              <li>Provided IT support for development environments and external hardware</li>
-            </ul>
+          <div class="timeline-block">
+            <div class="timeline-item">
+              <h3 class="project-headline" style="color: #1abc9c;">Red Trait Ventures</h3>
+              <span class="date">Feb 2023 – May 2023</span>
+              <ul>
+                <li>Maintained Azure-hosted apps and managed domain infrastructure</li>
+                <li>Updated and deployed websites using WordPress and custom scripts</li>
+                <li>Provided IT support for development environments and external hardware</li>
+              </ul>
+            </div>
           </div>
-          <div class="timeline-item">
-            <h3 class="project-headline" style="color: #1abc9c;">Inkeros (Telus Canada)</h3>
-            <span class="date">Aug 2022 – Sep 2022</span>
-            <ul>
-              <li>Generated leads via outbound calls, ensuring customer satisfaction</li>
-              <li>Supported Quebec customers using French language skills</li>
-              <li>Ensured proper documentation for new/existing customers</li>
-            </ul>
+          <div class="timeline-block">
+            <div class="timeline-item">
+              <h3 class="project-headline" style="color: #1abc9c;">Inkeros (Telus Canada)</h3>
+              <span class="date">Aug 2022 – Sep 2022</span>
+              <ul>
+                <li>Generated leads via outbound calls, ensuring customer satisfaction</li>
+                <li>Supported Quebec customers using French language skills</li>
+                <li>Ensured proper documentation for new/existing customers</li>
+              </ul>
+            </div>
           </div>
-          <div class="timeline-item">
-            <h3 class="project-headline" style="color: #1abc9c;">Freelance Developer</h3>
-            <span class="date">Apr 2021 – Feb 2022</span>
-            <ul>
-              <li>Developed e-commerce websites: robinrawandsupplies.ca, restlessera.com, nucleussportsgroup.com</li>
-              <li>Created an inventory sorting system using printable scanning sheets</li>
-              <li>Developed PHP scripts for software updates on Azure virtual desktops</li>
-            </ul>
+          <div class="timeline-block">
+            <div class="timeline-item">
+              <h3 class="project-headline" style="color: #1abc9c;">Freelance Developer</h3>
+              <span class="date">Apr 2021 – Feb 2022</span>
+              <ul>
+                <li>Developed e-commerce websites: robinrawandsupplies.ca, restlessera.com, nucleussportsgroup.com</li>
+                <li>Created an inventory sorting system using printable scanning sheets</li>
+                <li>Developed PHP scripts for software updates on Azure virtual desktops</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
     </section>
+
+    -->
 
 
     <!-- Contact Section -->
@@ -21131,52 +21260,511 @@ themeToggle.addEventListener('click', () => {
   <script src="vanta.net.min.js"></script>
   <script src="main.js"></script>
 
+
   <!-- scrolling skills carousel -->
   <script>
-const slider = document.querySelector('.skills-carousel');
+    const slider = document.querySelector('.skills-carousel');
 
-let isDown = false;
-let startX;
-let scrollLeft;
+    let isDown = false;
+    let startX;
+    let scrollLeft;
 
-slider.addEventListener('mousedown', (e) => {
-  isDown = true;
-  startX = e.pageX - slider.offsetLeft;
-  scrollLeft = slider.scrollLeft;
-});
+    slider.addEventListener('mousedown', (e) => {
+      isDown = true;
+      startX = e.pageX - slider.offsetLeft;
+      scrollLeft = slider.scrollLeft;
+    });
 
-slider.addEventListener('mouseleave', () => {
-  isDown = false;
-});
+    slider.addEventListener('mouseleave', () => {
+      isDown = false;
+    });
 
-slider.addEventListener('mouseup', () => {
-  isDown = false;
-});
+    slider.addEventListener('mouseup', () => {
+      isDown = false;
+    });
 
-slider.addEventListener('mousemove', (e) => {
-  if (!isDown) return;
-  e.preventDefault();
-  const x = e.pageX - slider.offsetLeft;
-  const walk = (x - startX) * 2; // adjust scroll speed
-  slider.scrollLeft = scrollLeft - walk;
-});
+    slider.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - slider.offsetLeft;
+      const walk = (x - startX) * 2; // adjust scroll speed
+      slider.scrollLeft = scrollLeft - walk;
+    });
 
-// Auto scroll function (loops endlessly)
-let autoScrollSpeed = 0.3;
-function autoScroll() {
-  if (!isDown) { // Only auto-scroll if not dragging
-    slider.scrollLeft += autoScrollSpeed;
+    // Auto scroll function (loops endlessly)
+    let autoScrollSpeed = 0.3;
+    function autoScroll() {
+      if (!isDown) { // Only auto-scroll if not dragging
+        slider.scrollLeft += autoScrollSpeed;
 
-    // Loop effect - reset scrollLeft to 0 if scrolled to max
-    if (slider.scrollLeft >= slider.scrollWidth - slider.clientWidth) {
-      slider.scrollLeft = 0;
+        // Loop effect - reset scrollLeft to 0 if scrolled to max
+        if (slider.scrollLeft >= slider.scrollWidth - slider.clientWidth) {
+          slider.scrollLeft = 0;
+        }
+      }
+      requestAnimationFrame(autoScroll);
     }
-  }
-  requestAnimationFrame(autoScroll);
-}
-autoScroll();
+    autoScroll();
 
   </script>
+
+ <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+     // Enhanced Timeline JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Initialize AOS if available
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+    }
+
+    // Timeline functionality
+    const timelineWrapper = document.getElementById('timelineWrapper');
+    const scrollProgress = document.getElementById('scrollProgress');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const cards = document.querySelectorAll('.timeline-card');
+    const sectionHeading = document.getElementById('sectionHeading');
+    const timelineNav = document.getElementById('timelineNav');
+    const experienceSection = document.getElementById('experience');
+    const tooltip = document.getElementById('tooltip');
+    const parallaxBg = document.querySelector('.parallax-bg');
+
+    let currentIndex = 0;
+    let isScrolling = false;
+    let hasAnimated = false;
+
+    // Intersection Observer for scroll-triggered animations
+    const observerOptions = {
+        threshold: 0.3,
+        rootMargin: '0px 0px -100px 0px'
+    };
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !hasAnimated) {
+                hasAnimated = true;
+                animateTimelineEntry();
+            }
+        });
+    }, observerOptions);
+
+    if (experienceSection) {
+        sectionObserver.observe(experienceSection);
+    }
+
+    // Animate timeline entry sequence
+    function animateTimelineEntry() {
+        // 1. Fade in section heading
+        setTimeout(() => {
+            sectionHeading.classList.add('visible');
+        }, 200);
+
+        // 2. Slide in timeline wrapper
+        setTimeout(() => {
+            timelineWrapper.classList.add('slide-in');
+        }, 600);
+
+        // 3. Animate cards one by one
+        setTimeout(() => {
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('card-visible');
+                }, index * 150);
+            });
+        }, 1000);
+
+        // 4. Show navigation
+        setTimeout(() => {
+            timelineNav.classList.add('nav-visible');
+        }, 1400);
+    }
+
+    // Enhanced scroll to card function
+    function scrollToCard(index) {
+        if (isScrolling || !cards[index]) return;
+        
+        isScrolling = true;
+        const card = cards[index];
+        const cardRect = card.getBoundingClientRect();
+        const wrapperRect = timelineWrapper.getBoundingClientRect();
+        const scrollLeft = timelineWrapper.scrollLeft;
+        
+        const targetScroll = scrollLeft + cardRect.left - wrapperRect.left - (wrapperRect.width / 2) + (cardRect.width / 2);
+        
+        // Smooth scroll with easing
+        smoothScrollTo(timelineWrapper, targetScroll, 800, () => {
+            isScrolling = false;
+        });
+    }
+
+    // Custom smooth scroll with easing
+    function smoothScrollTo(element, target, duration, callback) {
+        const start = element.scrollLeft;
+        const change = target - start;
+        const startTime = performance.now();
+
+        function animateScroll(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Easing function (easeInOutCubic)
+            const easeProgress = progress < 0.5 
+                ? 4 * progress * progress * progress 
+                : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+            
+            element.scrollLeft = start + change * easeProgress;
+            
+            if (progress < 1) {
+                requestAnimationFrame(animateScroll);
+            } else if (callback) {
+                callback();
+            }
+        }
+        
+        requestAnimationFrame(animateScroll);
+    }
+
+    // Navigation functions
+    function scrollTimeline(direction) {
+        if (isScrolling) return;
+        
+        if (direction === -1 && currentIndex > 0) {
+            currentIndex--;
+        } else if (direction === 1 && currentIndex < cards.length - 1) {
+            currentIndex++;
+        }
+        
+        scrollToCard(currentIndex);
+        updateNavButtons();
+        
+        // Add haptic feedback for mobile
+        if (navigator.vibrate) {
+            navigator.vibrate(50);
+        }
+    }
+
+    // Make scrollTimeline globally accessible
+    window.scrollTimeline = scrollTimeline;
+
+    // Update navigation button states
+    function updateNavButtons() {
+        if (prevBtn && nextBtn) {
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.disabled = currentIndex === cards.length - 1;
+        }
+    }
+
+    // Update scroll progress
+    function updateScrollProgress() {
+        if (!scrollProgress || !timelineWrapper) return;
+        
+        const scrollLeft = timelineWrapper.scrollLeft;
+        const maxScroll = timelineWrapper.scrollWidth - timelineWrapper.clientWidth;
+        const progress = maxScroll > 0 ? (scrollLeft / maxScroll) * 100 : 0;
+        
+        scrollProgress.style.width = progress + '%';
+    }
+
+    // Parallax effect
+    function updateParallax() {
+        if (!parallaxBg || !timelineWrapper) return;
+        
+        const scrollLeft = timelineWrapper.scrollLeft;
+        const maxScroll = timelineWrapper.scrollWidth - timelineWrapper.clientWidth;
+        const progress = maxScroll > 0 ? scrollLeft / maxScroll : 0;
+        
+        parallaxBg.style.transform = `translateX(${progress * 50}px)`;
+    }
+
+    // Enhanced tooltip functionality
+    function showTooltip(e, company, role) {
+        if (!tooltip) return;
+        
+        tooltip.innerHTML = `
+            <strong>${company}</strong><br>
+            <span style="color: var(--accent);">${role}</span>
+        `;
+        
+        const rect = tooltip.getBoundingClientRect();
+        const x = e.clientX - rect.width / 2;
+        const y = e.clientY - rect.height - 15;
+        
+        tooltip.style.left = Math.max(10, Math.min(x, window.innerWidth - rect.width - 10)) + 'px';
+        tooltip.style.top = Math.max(10, y) + 'px';
+        tooltip.classList.add('show');
+    }
+
+    function hideTooltip() {
+        if (tooltip) {
+            tooltip.classList.remove('show');
+        }
+    }
+
+    // Card hover effects and interactions
+    cards.forEach((card, index) => {
+        const company = card.getAttribute('data-company');
+        const role = card.getAttribute('data-role');
+        
+        // Mouse enter/leave for tooltip
+        card.addEventListener('mouseenter', (e) => {
+            showTooltip(e, company, role);
+        });
+        
+        card.addEventListener('mouseleave', hideTooltip);
+        
+        // Mouse move for tooltip positioning
+        card.addEventListener('mousemove', (e) => {
+            if (tooltip.classList.contains('show')) {
+                const rect = tooltip.getBoundingClientRect();
+                const x = e.clientX - rect.width / 2;
+                const y = e.clientY - rect.height - 15;
+                
+                tooltip.style.left = Math.max(10, Math.min(x, window.innerWidth - rect.width - 10)) + 'px';
+                tooltip.style.top = Math.max(10, y) + 'px';
+            }
+        });
+        
+        // Click to focus card
+        card.addEventListener('click', () => {
+            currentIndex = index;
+            scrollToCard(index);
+            updateNavButtons();
+        });
+    });
+
+    // Handle scroll events
+    if (timelineWrapper) {
+        timelineWrapper.addEventListener('scroll', () => {
+            updateScrollProgress();
+            updateParallax();
+            
+            // Update current index based on scroll position
+            const scrollCenter = timelineWrapper.scrollLeft + timelineWrapper.clientWidth / 2;
+            
+            cards.forEach((card, index) => {
+                const cardRect = card.getBoundingClientRect();
+                const wrapperRect = timelineWrapper.getBoundingClientRect();
+                const cardCenter = cardRect.left - wrapperRect.left + cardRect.width / 2 + timelineWrapper.scrollLeft;
+                
+                if (Math.abs(cardCenter - scrollCenter) < 200) {
+                    currentIndex = index;
+                }
+            });
+            
+            updateNavButtons();
+        });
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+            e.preventDefault();
+            scrollTimeline(-1);
+        } else if (e.key === 'ArrowRight') {
+            e.preventDefault();
+            scrollTimeline(1);
+        }
+    });
+
+    // Touch/swipe support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let touchStartTime = 0;
+
+    if (timelineWrapper) {
+        timelineWrapper.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartTime = Date.now();
+        });
+
+        timelineWrapper.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            const touchDuration = Date.now() - touchStartTime;
+            
+            // Only trigger swipe if it's a quick gesture
+            if (touchDuration < 500) {
+                handleSwipe();
+            }
+        });
+    }
+
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = touchStartX - touchEndX;
+        
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0) {
+                scrollTimeline(1); // Swipe left - next
+            } else {
+                scrollTimeline(-1); // Swipe right - previous
+            }
+        }
+    }
+
+    // Auto-scroll demonstration (optional)
+    function autoScrollDemo() {
+        let demoIndex = 0;
+        const demoInterval = setInterval(() => {
+            if (demoIndex < cards.length - 1) {
+                demoIndex++;
+            } else {
+                demoIndex = 0;
+            }
+            
+            currentIndex = demoIndex;
+            scrollToCard(demoIndex);
+            updateNavButtons();
+        }, 4000);
+        
+        // Stop auto-scroll on user interaction
+        const stopDemo = () => {
+            clearInterval(demoInterval);
+            document.removeEventListener('keydown', stopDemo);
+            timelineWrapper.removeEventListener('touchstart', stopDemo);
+            timelineWrapper.removeEventListener('mousedown', stopDemo);
+        };
+        
+        document.addEventListener('keydown', stopDemo);
+        timelineWrapper.addEventListener('touchstart', stopDemo);
+        timelineWrapper.addEventListener('mousedown', stopDemo);
+    }
+
+    // Initialize everything
+    function init() {
+        updateNavButtons();
+        updateScrollProgress();
+        updateParallax();
+        
+        // Optional: Start auto-scroll demo after initial animations
+        // setTimeout(autoScrollDemo, 3000);
+    }
+
+    // Initialize when DOM is ready
+    init();
+
+    // Resize handler
+    window.addEventListener('resize', () => {
+        updateScrollProgress();
+        updateParallax();
+    });
+
+    // Visibility change handler (pause animations when tab is hidden)
+    document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+            // Pause any running animations
+            cards.forEach(card => {
+                card.style.animationPlayState = 'paused';
+            });
+        } else {
+            // Resume animations
+            cards.forEach(card => {
+                card.style.animationPlayState = 'running';
+            });
+        }
+    });
+
+    // Performance optimization: throttle scroll events
+    let scrollTimeout;
+    function throttledScroll() {
+        if (scrollTimeout) {
+            clearTimeout(scrollTimeout);
+        }
+        scrollTimeout = setTimeout(() => {
+            updateScrollProgress();
+            updateParallax();
+        }, 16); // ~60fps
+    }
+
+    if (timelineWrapper) {
+        timelineWrapper.addEventListener('scroll', throttledScroll);
+    }
+
+    // Add loading animation
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--bg);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        opacity: 1;
+        transition: opacity 0.5s ease;
+    `;
+    
+    const loader = document.createElement('div');
+    loader.style.cssText = `
+        width: 50px;
+        height: 50px;
+        border: 3px solid transparent;
+        border-top: 3px solid var(--accent);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    `;
+    
+    loadingOverlay.appendChild(loader);
+    document.body.appendChild(loadingOverlay);
+    
+    // Add keyframe animation for loader
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Hide loading overlay once everything is loaded
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            loadingOverlay.style.opacity = '0';
+            setTimeout(() => {
+                loadingOverlay.remove();
+            }, 500);
+        }, 1000);
+    });
+
+    // Error handling for missing elements
+    if (!timelineWrapper || !cards.length) {
+        console.warn('Timeline elements not found. Please check your HTML structure.');
+        return;
+    }
+
+    console.log('Enhanced Timeline initialized successfully!');
+});
+
+// Global utility functions
+window.timelineUtils = {
+    scrollTo: function(index) {
+        if (typeof scrollTimeline === 'function') {
+            // Reset to start and scroll to specific index
+            currentIndex = 0;
+            for (let i = 0; i < index; i++) {
+                scrollTimeline(1);
+            }
+        }
+    },
+    
+    getCurrentCard: function() {
+        return currentIndex;
+    },
+    
+    getTotalCards: function() {
+        return document.querySelectorAll('.timeline-card').length;
+    }
+};
+    </script>
+
 
 </body>
 

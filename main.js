@@ -109,8 +109,8 @@ window.addEventListener("load", () => {
 
     // VANTA.NET background on hero
 
-    
-  const isLight = document.documentElement.classList.contains('light-mode');
+
+    const isLight = document.documentElement.classList.contains('light-mode');
     if (window.VANTA) {
       // Delay init slightly to avoid race conditions
       setTimeout(() => {
@@ -130,75 +130,142 @@ window.addEventListener("load", () => {
       }, 100);
     }
 
-    //svg animation
-
-    //old script for svg animation, not using (it was too slow and laggy) - new one is ani.js
-    /*
-    const svg = document.querySelector('.about-graphic');
-    const circles = svg.querySelectorAll('circle');
-    const circleArray = Array.from(circles);
-
-    // Store original radius for each circle
-    circleArray.forEach(circle => {
-      circle.dataset.originalR = circle.getAttribute('r');
-    });
-
-    let lastTime = 0;
-    svg.addEventListener('mousemove', (e) => {
-      const now = Date.now();
-      if (now - lastTime < 16) return; // throttle ~60fps
-      lastTime = now;
-
-      const rect = svg.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left;
-      const mouseY = e.clientY - rect.top;
-
-      circleArray.forEach(circle => {
-        const cx = parseFloat(circle.getAttribute('cx'));
-        const cy = parseFloat(circle.getAttribute('cy'));
-        const dist = Math.hypot(cx - mouseX, cy - mouseY);
-        const origR = parseFloat(circle.dataset.originalR);
-
-        if (dist < 30) {
-          // Grow radius proportional to closeness (max grow by 0.7)
-          const grow = ((30 - dist) / 40) * 0.7;
-          anime({
-            targets: circle,
-            r: origR + grow,
-            fill: '#d6681c',
-            duration: 150,
-            easing: 'easeOutQuad'
-          });
-        } else {
-          // Reset to original radius
-          anime({
-            targets: circle,
-            r: origR,
-            fill: '#1abc9c',
-            duration: 300,
-            easing: 'easeOutQuad'
-          });
-        }
-      });
-    });
-
-    // Reset all circles when mouse leaves SVG
-    svg.addEventListener('mouseleave', () => {
-      circleArray.forEach(circle => {
-        anime({
-          targets: circle,
-          r: circle.dataset.originalR,
-          fill: '#1abc9c',
-          duration: 400,
-          easing: 'easeOutQuad'
-        });
-      });
-    });
-    */
+    new ExperienceSlider();
 
 
-
-    
 
   }
+
+
+  class ExperienceSlider {
+    constructor() {
+      this.slides = document.querySelectorAll('.experience-slide');
+      this.dotsContainer = document.querySelector('.slider-dots');
+      this.prevBtn = document.querySelector('.prev-btn');
+      this.nextBtn = document.querySelector('.next-btn');
+      this.sliderContainer = document.querySelector('.experience-slider');
+      this.currentIndex = 0;
+      this.isAnimating = false;
+      this.scrollTimeout = null;
+      this.isHovering = false;
+
+      this.init();
+    }
+
+    init() {
+      // Create dots
+      this.slides.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.classList.add('slider-dot');
+        if (i === 0) dot.classList.add('active');
+        dot.addEventListener('click', () => this.goToSlide(i));
+        this.dotsContainer.appendChild(dot);
+      });
+
+      // Event listeners
+      this.prevBtn.addEventListener('click', () => this.prevSlide());
+      this.nextBtn.addEventListener('click', () => this.nextSlide());
+
+      // Hover detection
+      this.sliderContainer.addEventListener('mouseenter', () => {
+        this.isHovering = true;
+        document.body.style.overflow = 'hidden'; // Prevent page scrolling
+      });
+
+      this.sliderContainer.addEventListener('mouseleave', () => {
+        this.isHovering = false;
+        document.body.style.overflow = ''; // Re-enable page scrolling
+      });
+
+      // Wheel event - only when hovering
+      this.sliderContainer.addEventListener('wheel', (e) => this.handleWheel(e), { passive: false });
+
+      // Keyboard navigation
+      document.addEventListener('keydown', (e) => {
+        if (!this.isHovering) return;
+        if (e.key === 'ArrowLeft') this.prevSlide();
+        if (e.key === 'ArrowRight') this.nextSlide();
+      });
+
+      // Initial position
+      this.updateSlides();
+    }
+
+    handleWheel(e) {
+      if (!this.isHovering || this.isAnimating) return;
+
+      // Prevent default to stop page scrolling
+      e.preventDefault();
+
+      // Throttle wheel events
+      clearTimeout(this.scrollTimeout);
+      this.scrollTimeout = setTimeout(() => {
+        if (e.deltaY > 0) {
+          this.nextSlide();
+        } else {
+          this.prevSlide();
+        }
+      }, 100);
+    }
+
+    goToSlide(index) {
+      if (this.isAnimating || index === this.currentIndex) return;
+
+      this.isAnimating = true;
+      this.currentIndex = index;
+      this.updateSlides();
+
+      setTimeout(() => {
+        this.isAnimating = false;
+      }, 800);
+    }
+
+    prevSlide() {
+      if (this.isAnimating) return;
+      this.currentIndex = Math.max(0, this.currentIndex - 1);
+      this.updateSlides();
+      this.isAnimating = true;
+
+      setTimeout(() => {
+        this.isAnimating = false;
+      }, 800);
+    }
+
+    nextSlide() {
+      if (this.isAnimating) return;
+      this.currentIndex = Math.min(this.slides.length - 1, this.currentIndex + 1);
+      this.updateSlides();
+      this.isAnimating = true;
+
+      setTimeout(() => {
+        this.isAnimating = false;
+      }, 800);
+    }
+
+    updateSlides() {
+      // Update slides
+      this.slides.forEach((slide, index) => {
+        slide.classList.remove('active', 'prev', 'next');
+
+        if (index === this.currentIndex) {
+          slide.classList.add('active');
+        } else if (index < this.currentIndex) {
+          slide.classList.add('prev');
+        } else {
+          slide.classList.add('next');
+        }
+      });
+
+      // Update dots
+      const dots = document.querySelectorAll('.slider-dot');
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === this.currentIndex);
+      });
+
+      // Update buttons
+      this.prevBtn.disabled = this.currentIndex === 0;
+      this.nextBtn.disabled = this.currentIndex === this.slides.length - 1;
+    }
+  }
+
 });
