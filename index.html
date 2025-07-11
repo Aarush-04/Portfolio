@@ -3,8 +3,13 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
   <title>Aarush Pahuja | Portfolio</title>
+
+  <!-- Preloading scripts -->
+  <link rel="preload" href="three.min.js" as="script">
+  <link rel="preload" href="vanta.net.min.js" as="script">
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -20721,178 +20726,195 @@
     ];
 
 
+        const SVG_WIDTH = 400;
+        const SVG_HEIGHT = 400;
 
-    const SVG_WIDTH = 400;
-    const SVG_HEIGHT = 400;
+        const container = document.querySelector('.about-graphic-wrapper');
+        if (container.firstChild) container.removeChild(container.firstChild);
 
-    const container = document.querySelector('.about-graphic-wrapper');
-    if (container.firstChild) container.removeChild(container.firstChild);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
+        camera.position.z = 500; // Reduced for less 3D effect
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000);
-    camera.position.z = 550;
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(SVG_WIDTH, SVG_HEIGHT);
+        container.appendChild(renderer.domElement);
 
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-    renderer.setSize(SVG_WIDTH, SVG_HEIGHT);
-    container.appendChild(renderer.domElement);
+        // Create a simple white dot texture programmatically
+        const canvas = document.createElement('canvas');
+        canvas.width = 16;
+        canvas.height = 16;
+        const ctx = canvas.getContext('2d');
+        const gradient = ctx.createRadialGradient(8, 8, 0, 8, 8, 8);
+        gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
+        gradient.addColorStop(0.7, 'rgba(255, 255, 255, 0.8)');
+        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 16, 16);
+        
+        const dotTexture = new THREE.CanvasTexture(canvas);
 
-    const dotTexture = new THREE.TextureLoader().load('assets/white-dot.png');
+        const positions = new Float32Array(dots.length * 3);
+        const sizes = new Float32Array(dots.length);
 
-    const positions = new Float32Array(dots.length * 3);
-    const sizes = new Float32Array(dots.length);
+        dots.forEach((dot, i) => {
+            positions[i * 3] = dot.x - SVG_WIDTH / 2;
+            positions[i * 3 + 1] = SVG_HEIGHT / 2 - dot.y;
+            positions[i * 3 + 2] = 0; // Much smaller Z variation
+            sizes[i] = dot.r * 2.8; // Reduced size
+        });
 
-    dots.forEach((dot, i) => {
-      positions[i * 3] = dot.x - SVG_WIDTH / 2;
-      positions[i * 3 + 1] = SVG_HEIGHT / 2 - dot.y;
-      positions[i * 3 + 2] = 0;
-      sizes[i] = dot.r * 6; // Scale radius as needed
-    });
+        const geometry = new THREE.BufferGeometry();
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+        // Enhanced uniforms
+        const uniforms = {
+            pointTexture: { value: dotTexture },
+            color: { value: new THREE.Color(0x1abc9c) },
+            mousePos: { value: new THREE.Vector2(0, 0) },
+            resolution: { value: new THREE.Vector2(SVG_WIDTH, SVG_HEIGHT) },
+            time: { value: 0.0 }
+        };
 
-    /*const vertexShader = `
-      attribute float size;
-      varying vec2 vUv;
-      void main() {
-        vUv = uv;
-        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-        gl_PointSize = size * (300.0 / -mvPosition.z);
-        gl_Position = projectionMatrix * mvPosition;
-      }
-    `;
-    
-    const fragmentShader = `
-      uniform sampler2D pointTexture;
-      uniform vec3 color;
-      varying vec2 vUv;
-      void main() {
-        vec4 texColor = texture2D(pointTexture, gl_PointCoord);
-        if (texColor.a < 0.1) discard;
-        gl_FragColor = vec4(color, 1.0) * texColor;
-      }
-    `;
-    
-    const material = new THREE.ShaderMaterial({
-      uniforms: {
-        pointTexture: { value: dotTexture },
-        color: { value: new THREE.Color(0x1abc9c) },
-      },
-      vertexShader,
-      fragmentShader,
-      transparent: true,
-      alphaTest: 0.1,
-    });*/
+        // More 2D-focused material
+        const material = new THREE.ShaderMaterial({
+            uniforms,
+            vertexShader: `
+                attribute float size;
+                uniform float time;
+                varying vec2 vUv;
+                varying float vDistance;
+                
+                void main() {
+                    vUv = uv;
+                    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                    
+                    // Very subtle pulse
+                    float pulse = sin(time * 1.5 + position.x * 0.005) * 0.05 + 1.0;
+                    gl_PointSize = size * pulse;
+                    
+                    // Distance from center for spotlight effect
+                    vDistance = length(position.xy);
+                    
+                    gl_Position = projectionMatrix * mvPosition;
+                }
+            `,
+            fragmentShader: `
+                uniform sampler2D pointTexture;
+                uniform vec3 color;
+                uniform vec2 mousePos;
+                uniform vec2 resolution;
+                uniform float time;
+                varying vec2 vUv;
+                varying float vDistance;
+                
+                void main() {
+                    vec4 texColor = texture2D(pointTexture, gl_PointCoord);
+                    if (texColor.a < 0.1) discard;
+                    
+                    vec2 screenPos = gl_FragCoord.xy / resolution;
+                    screenPos = screenPos * 2.0 - 1.0;
+                    
+                    float mouseDist = distance(screenPos, mousePos);
+                    float spotlight = smoothstep(0.3, 0.0, mouseDist);
+                    
+                    // Base color intensity
+                    float baseIntensity = 0.9;
+                    
+                    // Brighter spotlight effect
+                    float finalIntensity = baseIntensity + spotlight * 0.8;
+                    
+                    vec3 finalColor = color * finalIntensity;
+                    
+                    gl_FragColor = vec4(finalColor, texColor.a);
+                }
+            `,
+            transparent: true,
+            alphaTest: 0.1,
+            
+            depthTest: false, // Reduces z-fighting and shading issues
+        });
 
-    // Uniforms
-    const uniforms = {
-      pointTexture: { value: dotTexture },
-      color: { value: new THREE.Color(0x1abc9c) },
-      mousePos: { value: new THREE.Vector2(0, 0) },
-      resolution: { value: new THREE.Vector2(container.clientWidth, container.clientHeight) },
-    };
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
 
-    // Material with custom fragment shader
-    const material = new THREE.ShaderMaterial({
-      uniforms,
-      vertexShader: `
-    attribute float size;
-    varying vec2 vUv;
-    void main() {
-      vUv = uv;
-      vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-      gl_PointSize = size * (300.0 / -mvPosition.z);
-      gl_Position = projectionMatrix * mvPosition;
-    }
-  `,
-      fragmentShader: `
-    uniform sampler2D pointTexture;
-    uniform vec3 color;
-    varying vec2 vUv;
-    uniform vec2 mousePos;
-    uniform vec2 resolution;
+        const mouseContainer = document.querySelector('.about');
+        if (mouseContainer) {
+            mouseContainer.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+                const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+                uniforms.mousePos.value.set(x, y);
+            });
+        }
 
-    void main() {
-      vec4 texColor = texture2D(pointTexture, gl_PointCoord);
-      if (texColor.a < 0.1) discard;
+        // Add touch events for mobile interaction
+        if (mouseContainer) {
+          mouseContainer.addEventListener('touchmove', (e) => {
+            const rect = container.getBoundingClientRect();
+            const touch = e.touches[0];
+            const x = ((touch.clientX - rect.left) / rect.width) * 2 - 1;
+            const y = -((touch.clientY - rect.top) / rect.height) * 2 + 1;
+            uniforms.mousePos.value.set(x, y);
+            e.preventDefault();
+          }, { passive: false });
+        }
 
-      vec2 screenPos = gl_FragCoord.xy / resolution;
-      screenPos = screenPos * 2.0 - 1.0;
+        // Enhanced resize handling
+function handleResize() {
+  const width = Math.min(container.clientWidth, window.innerWidth * 0.9);
+  const height = width; // Keep it square
+  
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
+  renderer.setSize(width, height);
+  uniforms.resolution.value.set(width, height);
+}
+        
+        window.addEventListener('resize', handleResize);
+        handleResize();
 
-      float dist = distance(screenPos, mousePos);
-      float spotlight = smoothstep(0.3, 0.0, dist);
+        // Enhanced animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            uniforms.time.value += 0.008;
+            
+            // Much gentler rotation - more 2D feel
+            points.rotation.y += (uniforms.mousePos.value.x * 0.05 - points.rotation.y) * 0.02;
+            points.rotation.x += (uniforms.mousePos.value.y * 0.05 - points.rotation.x) * 0.02;
+            
+            renderer.render(scene, camera);
+        }
+        animate();
 
-      vec3 finalColor = mix(color * 0.6, color, spotlight);
-      gl_FragColor = vec4(finalColor, 1.0) * texColor;
-    }
-  `,
-      transparent: true,
-      alphaTest: 0.1,
-    });
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        const currentPref = localStorage.getItem('theme');
+        if (currentPref === 'light') {
+            document.documentElement.classList.add('light-mode');
+            themeToggle.textContent = '🌞';
+        }
 
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('light-mode');
+            const isLight = document.documentElement.classList.contains('light-mode');
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+            themeToggle.textContent = isLight ? '🌞' : '🌙';
 
-    const points = new THREE.Points(geometry, material);
-    scene.add(points);
-
-    const mousecontainer = document.querySelector('.about');
-
-    mousecontainer.addEventListener('mousemove', (e) => {
-      const rect = container.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-      uniforms.mousePos.value.set(x, y);
-    });
-
-    // Resize handling
-    window.addEventListener('resize', () => {
-      const width = container.clientWidth;
-      const height = container.clientHeight;
-
-      camera.aspect = width / height;
-      camera.updateProjectionMatrix();
-      renderer.setSize(width, height);
-      uniforms.resolution.value.set(width, height);
-    });
-
-    // Animate loop
-    function animate() {
-      requestAnimationFrame(animate);
-
-      // Gentle interactive tilt
-      points.rotation.y = uniforms.mousePos.value.x * 0.1;
-      points.rotation.x = uniforms.mousePos.value.y * 0.1;
-
-      renderer.render(scene, camera);
-    }
-    animate();
-
-
-    const themeToggle = document.getElementById('theme-toggle');
-    const currentPref = localStorage.getItem('theme');
-    if (currentPref === 'light') document.documentElement.classList.add('light-mode');
-
-    themeToggle.addEventListener('click', () => {
-      document.documentElement.classList.toggle('light-mode');
-      const isLight = document.documentElement.classList.contains('light-mode');
-      localStorage.setItem('theme', isLight ? 'light' : 'dark');
-      themeToggle.textContent = isLight ? '🌞' : '🌙';
-
-      if (window.VANTA && VANTA.current) {
+            if (window.VANTA && VANTA.current) {
         VANTA.current.setOptions({
           backgroundColor: Number(isLight ? '0x91b3a7' : '0x0e0f11'),
           color: Number(isLight ? '0x121237' : '0x1abc9c')
         });
       }
 
-      // Update Three.js dot color
-      if (points) {
-        const newColor = isLight ? 0x91b3a7 : 0x1abc9c;
-        points.material.uniforms.color.value.set(newColor);
-      }
-    });
-
-
+            
+            // More distinctive colors for light/dark mode
+            const newColor = isLight ? 0x35bfff : 0x00e6cc;
+            uniforms.color.value.set(newColor);
+        });
 
   </script>
 
@@ -20921,26 +20943,27 @@
 
     <!-- About Section -->
     <section class="section about alt-bg" id="about">
-      <div class="container">
-        <div class="about-layout">
-          <div class="about-text">
-            <!-- Your heading + paragraph + resume button -->
-            <h2><i class="fa-solid fa-user"></i> About Me</h2>
-            <p style="color: var(--text-list);">
-              Hey there! I'm a Computer Science student and IT support specialist with hands-on experience in
-              infrastructure, field tech, and full stack development. I enjoy working at the intersection of hardware
-              and software — building tools, hardening systems, and automating workflows.
-            </p>
-          </div>
+        <div class="container">
+            <div class="about-layout">
+                <div class="about-text">
+                    <h2><i class="fa-solid fa-user"></i> About Me</h2>
+                    
+                   <p class="about-intro">
+                        Hey there! I'm Aarush, a <span class="highlight">Computer Science student</span>, <span class="highlight">developer</span>, and <span class="highlight">hands-on problem solver</span>. I've built e-commerce sites, deployed secure IT infrastructure at DHL, and developed internal tools and full-stack platforms like PharmaTrack.</p>
+                    
+                    <p class="about-description">
+                        Whether it's writing clean code, configuring hardware, or diving into a new tech stack, I thrive on learning quickly and adapting even faster. My experience spans field tech, support, automation, and development — and I'm always looking to push my limits and build something that matters.
+                    </p>
+                </div>
 
-          <div class="about-image-container">
-            <div class="about-graphic-wrapper"></div>
-            <a href="/assets/aarushpahuja-resume.pdf" class="resume-button" download>
-              <i class="fa-solid fa-file-arrow-down"></i> Learn More About Me
-            </a>
-          </div>
+                <div class="about-image-container">
+                    <div class="about-graphic-wrapper"></div>
+                    <a href="/assets/aarushpahuja-resume.pdf" class="resume-button" download>
+                        <i class="fa-solid fa-file-arrow-down"></i> Download Resume
+                    </a>
+                </div>
+            </div>
         </div>
-      </div>
     </section>
 
 
@@ -21151,77 +21174,6 @@
 </section>
 
 
-
-    <!-- old experience section
-    <section class="section experience" id="experience">
-      <div class="container">
-        <h2><i class="fa-solid fa-briefcase"></i> Experience</h2>
-        <div class="timeline">
-          <div class="timeline-line"></div>
-          <div class="timeline-block">
-            <div class="timeline-item">
-              <h3 class="project-headline" style="color: #1abc9c;">DHL Express Canada</h3>
-              <span class="date">Aug 2023 – Sep 2024</span>
-              <ul>
-                <li>Prepared and configured laptops for new employees, ensuring optimal performance</li>
-                <li>Provided advanced technical support for complex hardware/software issues</li>
-                <li>Managed IT assets across Canada and oversaw infrastructure network management</li>
-                <li>Supported users in English and French via phone, chat, and email</li>
-                <li>Assisted in sales efforts by addressing inquiries and telecom customer issues</li>
-              </ul>
-            </div>
-          </div>
-          <div class="timeline-block">
-            <div class="timeline-item">
-              <h3 class="project-headline" style="color: #1abc9c;">Bath & Body Works</h3>
-              <span class="date">Sep 2024 – Jan 2025</span>
-              <ul>
-                <li>Assisted customers in product selection and handled transactions efficiently</li>
-                <li>Managed inventory and restocked shelves to maintain product availability</li>
-                <li>Achieved daily sales goals through personalized recommendations</li>
-              </ul>
-            </div>
-          </div>
-          <div class="timeline-block">
-            <div class="timeline-item">
-              <h3 class="project-headline" style="color: #1abc9c;">Red Trait Ventures</h3>
-              <span class="date">Feb 2023 – May 2023</span>
-              <ul>
-                <li>Maintained Azure-hosted apps and managed domain infrastructure</li>
-                <li>Updated and deployed websites using WordPress and custom scripts</li>
-                <li>Provided IT support for development environments and external hardware</li>
-              </ul>
-            </div>
-          </div>
-          <div class="timeline-block">
-            <div class="timeline-item">
-              <h3 class="project-headline" style="color: #1abc9c;">Inkeros (Telus Canada)</h3>
-              <span class="date">Aug 2022 – Sep 2022</span>
-              <ul>
-                <li>Generated leads via outbound calls, ensuring customer satisfaction</li>
-                <li>Supported Quebec customers using French language skills</li>
-                <li>Ensured proper documentation for new/existing customers</li>
-              </ul>
-            </div>
-          </div>
-          <div class="timeline-block">
-            <div class="timeline-item">
-              <h3 class="project-headline" style="color: #1abc9c;">Freelance Developer</h3>
-              <span class="date">Apr 2021 – Feb 2022</span>
-              <ul>
-                <li>Developed e-commerce websites: robinrawandsupplies.ca, restlessera.com, nucleussportsgroup.com</li>
-                <li>Created an inventory sorting system using printable scanning sheets</li>
-                <li>Developed PHP scripts for software updates on Azure virtual desktops</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    -->
-
-
     <!-- Contact Section -->
 <section class="section contact alt-bg" id="contact">
   <div class="contact-card">
@@ -21267,48 +21219,86 @@
 
   <!-- scrolling skills carousel -->
   <script>
-    const slider = document.querySelector('.skills-carousel');
+const slider = document.querySelector('.skills-carousel');
 
-    let isDown = false;
-    let startX;
-    let scrollLeft;
+let isDown = false;
+let startX;
+let scrollLeft;
+let animationId;
 
-    slider.addEventListener('mousedown', (e) => {
-      isDown = true;
-      startX = e.pageX - slider.offsetLeft;
-      scrollLeft = slider.scrollLeft;
-    });
+// Drag functionality
+slider.addEventListener('mousedown', (e) => {
+  isDown = true;
+  slider.style.cursor = 'grabbing';
+  startX = e.pageX - slider.offsetLeft;
+  scrollLeft = slider.scrollLeft;
+  e.preventDefault(); // Prevent text selection
+});
 
-    slider.addEventListener('mouseleave', () => {
-      isDown = false;
-    });
+slider.addEventListener('mouseleave', () => {
+  isDown = false;
+  slider.style.cursor = 'grab';
+});
 
-    slider.addEventListener('mouseup', () => {
-      isDown = false;
-    });
+slider.addEventListener('mouseup', () => {
+  isDown = false;
+  slider.style.cursor = 'grab';
+});
 
-    slider.addEventListener('mousemove', (e) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.pageX - slider.offsetLeft;
-      const walk = (x - startX) * 2; // adjust scroll speed
-      slider.scrollLeft = scrollLeft - walk;
-    });
+slider.addEventListener('mousemove', (e) => {
+  if (!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - slider.offsetLeft;
+  const walk = (x - startX) * 2; // Scroll speed multiplier
+  slider.scrollLeft = scrollLeft - walk;
+});
 
-    // Auto scroll function (loops endlessly)
-    let autoScrollSpeed = 0.3;
-    function autoScroll() {
-      if (!isDown) { // Only auto-scroll if not dragging
-        slider.scrollLeft += autoScrollSpeed;
+// Disable default scroll behaviors
+slider.addEventListener('wheel', (e) => {
+  e.preventDefault();
+});
 
-        // Loop effect - reset scrollLeft to 0 if scrolled to max
-        if (slider.scrollLeft >= slider.scrollWidth - slider.clientWidth) {
-          slider.scrollLeft = 0;
-        }
+// Auto scroll function with smooth looping
+let autoScrollSpeed = 0.5;
+let lastTime = 0;
+
+function autoScroll(currentTime) {
+  if (!isDown) { // Only auto-scroll if not dragging
+    const deltaTime = currentTime - lastTime;
+    
+    if (deltaTime > 16) { // Throttle to ~60fps
+      slider.scrollLeft += autoScrollSpeed;
+      
+      // Smooth loop effect
+      if (slider.scrollLeft >= slider.scrollWidth - slider.clientWidth) {
+        slider.scrollLeft = 0;
       }
-      requestAnimationFrame(autoScroll);
+      
+      lastTime = currentTime;
     }
-    autoScroll();
+  }
+  
+  animationId = requestAnimationFrame(autoScroll);
+}
+
+// Start auto-scroll
+autoScroll(0);
+
+// Optional: Pause auto-scroll on hover
+slider.addEventListener('mouseenter', () => {
+  // You can uncomment this if you want to pause on hover
+   cancelAnimationFrame(animationId);
+});
+
+slider.addEventListener('mouseleave', () => {
+  // You can uncomment this if you want to resume on mouse leave
+   if (!animationId) {
+     autoScroll(performance.now());
+   }
+});
+
+// Set initial cursor style
+slider.style.cursor = 'grab';
 
   </script>
 

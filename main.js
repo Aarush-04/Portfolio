@@ -19,15 +19,14 @@ window.addEventListener("load", () => {
   }
 
   // Wait at least minLoaderTime before hiding loader
-  function checkLoaderTime() {
-    const elapsed = performance.now() - startTime;
-    if (elapsed >= minLoaderTime) {
-      hideLoader();
-    } else {
-      setTimeout(hideLoader, minLoaderTime - elapsed);
-    }
+function checkLoaderTime() {
+  const elapsed = performance.now() - startTime;
+  if (elapsed >= minLoaderTime) {
+    hideLoader();
+  } else {
+    requestAnimationFrame(checkLoaderTime);
   }
-
+}
   checkLoaderTime();
 
   function initAnimations() {
