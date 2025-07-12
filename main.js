@@ -36,8 +36,9 @@ function checkLoaderTime() {
     // Animate hero title typing effect
     const heroTitle = document.getElementById("hero-title");
     const fullText = "<Aarush-Pahuja>";
+    const isMobile = window.innerWidth <= 768;
     heroTitle.style.fontFamily = "'Source Code Pro', monospace";
-    heroTitle.style.whiteSpace = "nowrap";
+    heroTitle.style.whiteSpace = isMobile ? 'normal' : 'nowrap';
     heroTitle.style.overflow = "hidden";
     heroTitle.style.borderRight = "2px solid var(--accent)";
     let i = 0;

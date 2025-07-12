@@ -20832,7 +20832,7 @@
             `,
             transparent: true,
             alphaTest: 0.1,
-            
+
             depthTest: false, // Reduces z-fighting and shading issues
         });
 
@@ -20846,7 +20846,7 @@
                 const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
                 const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
                 uniforms.mousePos.value.set(x, y);
-            });
+            }, {passive: true});
         }
 
         // Add touch events for mobile interaction
@@ -20898,6 +20898,7 @@ function handleResize() {
         }
 
         themeToggle.addEventListener('click', () => {
+            //e.stopPropagation();
             document.documentElement.classList.toggle('light-mode');
             const isLight = document.documentElement.classList.contains('light-mode');
             localStorage.setItem('theme', isLight ? 'light' : 'dark');
@@ -21001,7 +21002,23 @@ function handleResize() {
             <div class="skill-card"><i class="fa-brands fa-docker"></i> Docker</div>
           </div>
         </div>
+      
+
+        <div class="skills-grid-static">
+          <div class="skill-card-static"><i class="fa-brands fa-js-square"></i> JavaScript</div>
+          <div class="skill-card-static"><i class="fa-brands fa-python"></i> Python</div>
+          <div class="skill-card-static"><i class="fa-brands fa-java"></i> Java</div>
+          <div class="skill-card-static"><i class="fa-brands fa-html5"></i> HTML</div>
+          <div class="skill-card-static"><i class="fa-brands fa-css3-alt"></i> CSS</div>
+          <div class="skill-card-static"><i class="fa-brands fa-node-js"></i> Node.js</div>
+          <div class="skill-card-static"><i class="fa-brands fa-react"></i> React</div>
+          <div class="skill-card-static"><i class="fa-brands fa-microsoft"></i> Azure</div>
+          <div class="skill-card-static"><i class="fa-solid fa-terminal"></i> PowerShell</div>
+          <div class="skill-card-static"><i class="fa-solid fa-database"></i> MySQL</div>
+          <div class="skill-card-static"><i class="fa-brands fa-docker"></i> Docker</div>
+        </div>
       </div>
+
     </section>
 
 
@@ -21342,6 +21359,25 @@ document.addEventListener('DOMContentLoaded', function() {
         entries.forEach(entry => {
             if (entry.isIntersecting && !hasAnimated) {
                 hasAnimated = true;
+                // In your slider initialization code
+                if (window.innerWidth <= 768) {
+                  // Convert to accordion-style for mobile
+                  const slides = document.querySelectorAll('.experience-slide');
+                  
+                  document.querySelector('.prev-btn').addEventListener('click', () => {
+                    const current = document.querySelector('.experience-slide.active');
+                    const prev = current.previousElementSibling || slides[slides.length-1];
+                    current.classList.remove('active');
+                    prev.classList.add('active');
+                  });
+                  
+                  document.querySelector('.next-btn').addEventListener('click', () => {
+                    const current = document.querySelector('.experience-slide.active');
+                    const next = current.nextElementSibling || slides[0];
+                    current.classList.remove('active');
+                    next.classList.add('active');
+                  });
+                }
                 animateTimelineEntry();
             }
         });
